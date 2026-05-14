@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPU IP 验证工程师 | 个人主页</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #0f1625;
+            --bg-card: rgba(18, 28, 50, 0.6);
+            --text-primary: #e8edf5;
+            --text-secondary: #8899b4;
+            --accent-cyan: #00e5ff;
+            --accent-blue: #2979ff;
+            --accent-green: #00e676;
+            --accent-purple: #7c4dff;
+            --glow-cyan: rgba(0, 229, 255, 0.15);
+            --glow-blue: rgba(41, 121, 255, 0.12);
+            --border-color: rgba(0, 229, 255, 0.12);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* ── Animated Background Grid ── */
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background-image:
+                linear-gradient(rgba(0, 229, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 229, 255, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+        }
+
+        .bg-glow {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .bg-glow::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: -10%;
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(ellipse at center, rgba(0, 229, 255, 0.06), transparent 70%);
+            animation: glowFloat 12s ease-in-out infinite alternate;
+        }
+
+        .bg-glow::after {
+            content: '';
+            position: absolute;
+            bottom: -10%;
+            right: -10%;
+            width: 50%;
+            height: 50%;
+            background: radial-gradient(ellipse at center, rgba(124, 77, 255, 0.05), transparent 70%);
+            animation: glowFloat 15s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes glowFloat {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(5%, 5%) scale(1.1); }
+        }
+
+        /* ── Floating Particles ── */
+        .particles {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            opacity: 0;
+            animation: particleFloat linear infinite;
+        }
+
+        .particle:nth-child(1) { left: 10%; animation-duration: 18s; animation-delay: 0s; }
+        .particle:nth-child(2) { left: 25%; animation-duration: 22s; animation-delay: 2s; }
+        .particle:nth-child(3) { left: 40%; animation-duration: 16s; animation-delay: 4s; }
+        .particle:nth-child(4) { left: 55%; animation-duration: 20s; animation-delay: 1s; }
+        .particle:nth-child(5) { left: 70%; animation-duration: 24s; animation-delay: 3s; }
+        .particle:nth-child(6) { left: 85%; animation-duration: 19s; animation-delay: 5s; }
+        .particle:nth-child(7) { left: 15%; animation-duration: 21s; animation-delay: 7s; }
+        .particle:nth-child(8) { left: 50%; animation-duration: 17s; animation-delay: 6s; }
+        .particle:nth-child(9) { left: 75%; animation-duration: 23s; animation-delay: 8s; }
+        .particle:nth-child(10) { left: 90%; animation-duration: 15s; animation-delay: 9s; }
+
+        @keyframes particleFloat {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+        }
+
+        /* ── Scan Line ── */
+        .scanline {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 229, 255, 0.015) 2px,
+                rgba(0, 229, 255, 0.015) 4px
+            );
+        }
+
+        /* ── Layout ── */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ── Nav ── */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(10, 14, 23, 0.85);
+            backdrop-filter: blur(20px) saturate(1.4);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        nav .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--accent-cyan);
+            text-shadow: 0 0 20px var(--glow-cyan);
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: var(--text-secondary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--accent-cyan);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-cyan);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* ── Hero ── */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 120px 0 80px;
+            position: relative;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .hero-text .badge {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            background: rgba(0, 229, 255, 0.08);
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            padding: 6px 16px;
+            border-radius: 100px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .hero-text h1 {
+            font-size: clamp(36px, 5vw, 56px);
+            font-weight: 700;
+            line-height: 1.15;
+            margin-bottom: 16px;
+            animation: fadeInUp 0.8s ease 0.1s both;
+        }
+
+        .hero-text h1 .highlight {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-text .subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 15px;
+            color: var(--accent-green);
+            margin-bottom: 20px;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        .hero-text .subtitle::before {
+            content: '> ';
+            color: var(--text-secondary);
+        }
+
+        .hero-text p {
+            color: var(--text-secondary);
+            font-size: 16px;
+            max-width: 480px;
+            margin-bottom: 32px;
+            animation: fadeInUp 0.8s ease 0.3s both;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 16px;
+            animation: fadeInUp 0.8s ease 0.4s both;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            color: var(--bg-primary);
+            box-shadow: 0 4px 24px var(--glow-cyan);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px var(--glow-cyan);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--accent-cyan);
+            border: 1px solid rgba(0, 229, 255, 0.3);
+        }
+
+        .btn-outline:hover {
+            background: rgba(0, 229, 255, 0.08);
+            border-color: var(--accent-cyan);
+            transform: translateY(-2px);
+        }
+
+        /* ── Hero Visual ── */
+        .hero-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        .chip-container {
+            position: relative;
+            width: 320px;
+            height: 320px;
+        }
+
+        .chip-core {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, rgba(0, 229, 255, 0.08), rgba(41, 121, 255, 0.06));
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            letter-spacing: 2px;
+            text-align: center;
+            line-height: 1.4;
+            box-shadow:
+                0 0 40px var(--glow-cyan),
+                inset 0 0 40px rgba(0, 229, 255, 0.04);
+            animation: pulseChip 4s ease-in-out infinite;
+            z-index: 2;
+        }
+
+        @keyframes pulseChip {
+            0%, 100% { box-shadow: 0 0 40px var(--glow-cyan), inset 0 0 40px rgba(0, 229, 255, 0.04); }
+            50% { box-shadow: 0 0 60px var(--glow-cyan), inset 0 0 60px rgba(0, 229, 255, 0.06); }
+        }
+
+        .chip-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            border: 1px solid rgba(0, 229, 255, 0.06);
+            animation: ringExpand 6s ease-in-out infinite;
+        }
+
+        .chip-ring:nth-child(2) { width: 180px; height: 180px; animation-delay: 0s; }
+        .chip-ring:nth-child(3) { width: 260px; height: 260px; animation-delay: 2s; }
+        .chip-ring:nth-child(4) { width: 340px; height: 340px; animation-delay: 4s; }
+
+        @keyframes ringExpand {
+            0% { transform: translate(-50%, -50%) scale(0.85); opacity: 0.3; border-color: rgba(0, 229, 255, 0.06); }
+            50% { transform: translate(-50%, -50%) scale(1.05); opacity: 0.6; border-color: rgba(0, 229, 255, 0.15); }
+            100% { transform: translate(-50%, -50%) scale(0.85); opacity: 0.3; border-color: rgba(0, 229, 255, 0.06); }
+        }
+
+        .chip-trace {
+            position: absolute;
+            background: rgba(0, 229, 255, 0.08);
+        }
+
+        .chip-trace.h { height: 1px; width: 60px; }
+        .chip-trace.v { width: 1px; height: 60px; }
+
+        .chip-trace.t1 { top: 18%; left: 50%; transform: translateX(-50%); }
+        .chip-trace.t2 { bottom: 18%; left: 50%; transform: translateX(-50%); }
+        .chip-trace.t3 { left: 18%; top: 50%; transform: translateY(-50%); }
+        .chip-trace.t4 { right: 18%; top: 50%; transform: translateY(-50%); }
+
+        .chip-trace.t5 { top: 28%; left: 30%; transform: rotate(45deg); width: 40px; }
+        .chip-trace.t6 { bottom: 28%; right: 30%; transform: rotate(45deg); width: 40px; }
+
+        /* ── Sections Common ── */
+        section {
+            padding: 100px 0;
+        }
+
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .section-label::before {
+            content: '// ';
+            opacity: 0.5;
+        }
+
+        .section-title {
+            font-size: clamp(28px, 3.5vw, 40px);
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .section-desc {
+            color: var(--text-secondary);
+            font-size: 16px;
+            max-width: 600px;
+            margin-bottom: 48px;
+        }
+
+        /* ── About ── */
+        #about {
+            border-top: 1px solid var(--border-color);
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+        }
+
+        .about-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 36px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+
+        .about-card:hover {
+            border-color: rgba(0, 229, 255, 0.2);
+            box-shadow: 0 8px 40px var(--glow-cyan);
+            transform: translateY(-4px);
+        }
+
+        .about-card .icon {
+            font-size: 28px;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .about-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .about-card p, .about-card li {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .about-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .about-card ul li {
+            padding-left: 20px;
+            position: relative;
+            margin-bottom: 4px;
+        }
+
+        .about-card ul li::before {
+            content: '›';
+            position: absolute;
+            left: 4px;
+            color: var(--accent-cyan);
+            font-weight: 700;
+        }
+
+        /* ── Skills ── */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+        }
+
+        .skill-group {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 28px 24px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+
+        .skill-group:hover {
+            border-color: rgba(0, 229, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .skill-group h4 {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .skill-tag {
+            font-size: 13px;
+            color: var(--text-secondary);
+            background: rgba(0, 229, 255, 0.04);
+            border: 1px solid rgba(0, 229, 255, 0.08);
+            padding: 5px 14px;
+            border-radius: 100px;
+            transition: all 0.3s;
+        }
+
+        .skill-tag:hover {
+            color: var(--accent-cyan);
+            border-color: rgba(0, 229, 255, 0.3);
+            background: rgba(0, 229, 255, 0.08);
+        }
+
+        /* ── Stats ── */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-top: 48px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 32px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+
+        .stat-item:hover {
+            border-color: rgba(0, 229, 255, 0.2);
+        }
+
+        .stat-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 36px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        /* ── Contact ── */
+        #contact {
+            border-top: 1px solid var(--border-color);
+            padding-bottom: 60px;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: start;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+
+        .contact-item:hover {
+            border-color: rgba(0, 229, 255, 0.2);
+        }
+
+        .contact-item .emoji-icon {
+            font-size: 24px;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 229, 255, 0.06);
+            border-radius: 10px;
+            flex-shrink: 0;
+        }
+
+        .contact-item .info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .contact-item .info p {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .contact-item .info a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .contact-item .info a:hover {
+            text-decoration: underline;
+        }
+
+        /* ── QR Code ── */
+        .qr-section {
+            text-align: center;
+        }
+
+        .qr-card {
+            display: inline-block;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 32px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+
+        .qr-card:hover {
+            border-color: rgba(0, 229, 255, 0.2);
+            box-shadow: 0 8px 40px var(--glow-cyan);
+        }
+
+        .qr-placeholder {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, rgba(0, 229, 255, 0.04), rgba(41, 121, 255, 0.02));
+            border: 2px dashed rgba(0, 229, 255, 0.15);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-secondary);
+            gap: 8px;
+        }
+
+        .qr-placeholder .qr-icon {
+            font-size: 36px;
+            opacity: 0.5;
+        }
+
+        .qr-card p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        .qr-card .hint {
+            font-size: 11px;
+            color: rgba(136, 153, 180, 0.5);
+            margin-top: 4px;
+        }
+
+        /* ── Footer ── */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 32px 0;
+            text-align: center;
+        }
+
+        footer p {
+            font-size: 13px;
+            color: rgba(136, 153, 180, 0.4);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        footer a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+        }
+
+        /* ── Animations ── */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Mobile ── */
+        @media (max-width: 768px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .hero-visual {
+                order: -1;
+            }
+
+            .chip-container {
+                width: 240px;
+                height: 240px;
+                transform: scale(0.8);
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .nav-links {
+                gap: 16px;
+            }
+
+            .nav-links a {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-cta {
+                flex-direction: column;
+            }
+
+            .stats-row {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+
+            .stat-number {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═══ Background Effects ═══ -->
+    <div class="bg-grid"></div>
+    <div class="bg-glow"></div>
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+    <div class="scanline"></div>
+
+    <!-- ═══ Nav ═══ -->
+    <nav>
+        <div class="container">
+            <div class="logo">&lt;C<span>PU_</span>Ver/&gt;</div>
+            <ul class="nav-links">
+                <li><a href="#about">关于</a></li>
+                <li><a href="#skills">专长</a></li>
+                <li><a href="#contact">联系</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ═══ Hero ═══ -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <div class="badge">CPU IP Verification Engineer</div>
+                    <h1>
+                        用严谨<br>
+                        <span class="highlight">铸造芯片灵魂</span>
+                    </h1>
+                    <div class="subtitle">const success = coverage_closure &amp;&amp; formal_proof;</div>
+                    <p>
+                        我是专注于 CPU IP 核验证的工程师，深耕 UVM、Formal Verification
+                        与 Coverage-Driven Verification 方法论。致力于在每一个时钟周期
+                        里寻找隐藏的 Bug，为高性能处理器保驾护航。
+                    </p>
+                    <div class="hero-cta">
+                        <a href="#contact" class="btn btn-primary">
+                            📬 联系我
+                        </a>
+                        <a href="#about" class="btn btn-outline">
+                            了解更多 →
+                        </a>
+                    </div>
+                </div>
+
+                <div class="hero-visual">
+                    <div class="chip-container">
+                        <div class="chip-ring"></div>
+                        <div class="chip-ring"></div>
+                        <div class="chip-ring"></div>
+                        <div class="chip-trace h t1"></div>
+                        <div class="chip-trace h t2"></div>
+                        <div class="chip-trace v t3"></div>
+                        <div class="chip-trace v t4"></div>
+                        <div class="chip-trace t5"></div>
+                        <div class="chip-trace t6"></div>
+                        <div class="chip-core">
+                            CPU<br>VERIF
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ About ═══ -->
+    <section id="about">
+        <div class="container">
+            <div class="section-label">关于我</div>
+            <h2 class="section-title">不止于发现 Bug</h2>
+            <p class="section-desc">
+                验证不是找茬，而是一门用形式化方法和工程直觉建立信心的艺术。
+                我的日常是与 Spec、Testbench、Coverage 和 Assertion 打交道。
+            </p>
+
+            <div class="about-grid">
+                <div class="about-card">
+                    <span class="icon">🔬</span>
+                    <h3>专业背景</h3>
+                    <p>
+                        多年 CPU IP 级验证经验，覆盖 Core、Cache、MMU、
+                        总线互联等关键组件。精通从 <strong>SV/UVM</strong> 到
+                        <strong>Formal Verification</strong> 的全栈验证流程。
+                        主导过多个高性能处理器项目的验证策略制定与 Sign-off。
+                    </p>
+                </div>
+
+                <div class="about-card">
+                    <span class="icon">⚙️</span>
+                    <h3>验证方法论</h3>
+                    <ul>
+                        <li>UVM — 面向对象的通用验证方法学</li>
+                        <li>SVA — SystemVerilog Assertion 断言覆盖</li>
+                        <li>Formal — 形式化等价性检查与属性验证</li>
+                        <li>CDV — Coverage-Driven 闭环验证</li>
+                        <li>Low-Power Verification — UPF/CPF 功耗感知验证</li>
+                        <li>RISC-V ISA 验证框架</li>
+                    </ul>
+                </div>
+
+                <div class="about-card">
+                    <span class="icon">🛠️</span>
+                    <h3>工具链</h3>
+                    <ul>
+                        <li>仿真: VCS, Xcelium, QuestaSim</li>
+                        <li>Formal: VC Formal, JasperGold, Questa Formal</li>
+                        <li>Debug: Verdi, DVE, SimVision</li>
+                        <li>覆盖率: IMC, Unified Coverage</li>
+                        <li>脚本: Python, Perl, Tcl, Makefile</li>
+                        <li>版本管理: Git, Perforce</li>
+                    </ul>
+                </div>
+
+                <div class="about-card">
+                    <span class="icon">🎯</span>
+                    <h3>验证哲学</h3>
+                    <p>
+                        "验证做不到证明不存在 Bug，只能证明存在 Bug。"<br><br>
+                        我深信好的验证策略应当是 <strong>结构化</strong>、<strong>可复现</strong>、
+                        <strong>可度量</strong> 的。每一行测试代码都应对应一个明确的风险
+                        场景，每一个 Coverage Hole 都值得被认真对待。
+                    </p>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-row">
+                <div class="stat-item">
+                    <div class="stat-number">300+</div>
+                    <div class="stat-label">测试用例设计</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">99.7%</div>
+                    <div class="stat-label">覆盖达标率</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">5+</div>
+                    <div class="stat-label">芯片 Tape-out 经验</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">∞</div>
+                    <div class="stat-label">对质量的不妥协</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ Skills ═══ -->
+    <section id="skills">
+        <div class="container">
+            <div class="section-label">技术栈</div>
+            <h2 class="section-title">专长领域</h2>
+            <p class="section-desc">
+                从微架构验证到后仿真调试，覆盖数字芯片验证全流程。
+            </p>
+
+            <div class="skills-grid">
+                <div class="skill-group">
+                    <h4>验证语言</h4>
+                    <div class="skill-tags">
+                        <span class="skill-tag">SystemVerilog</span>
+                        <span class="skill-tag">SVA</span>
+                        <span class="skill-tag">UVM 1.2</span>
+                        <span class="skill-tag">Verilog</span>
+                        <span class="skill-tag">C/C++</span>
+                    </div>
+                </div>
+
+                <div class="skill-group">
+                    <h4>仿真与 Formal</h4>
+                    <div class="skill-tags">
+                        <span class="skill-tag">VCS</span>
+                        <span class="skill-tag">Xcelium</span>
+                        <span class="skill-tag">QuestaSim</span>
+                        <span class="skill-tag">JasperGold</span>
+                        <span class="skill-tag">VC Formal</span>
+                    </div>
+                </div>
+
+                <div class="skill-group">
+                    <h4>调试与分析</h4>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Verdi</span>
+                        <span class="skill-tag">DVE</span>
+                        <span class="skill-tag">SimVision</span>
+                        <span class="skill-tag">波形分析</span>
+                        <span class="skill-tag">覆盖率合并</span>
+                    </div>
+                </div>
+
+                <div class="skill-group">
+                    <h4>脚本与自动化</h4>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">Perl</span>
+                        <span class="skill-tag">Tcl</span>
+                        <span class="skill-tag">Makefile</span>
+                        <span class="skill-tag">Shell</span>
+                    </div>
+                </div>
+
+                <div class="skill-group">
+                    <h4>CPU 架构</h4>
+                    <div class="skill-tags">
+                        <span class="skill-tag">RISC-V</span>
+                        <span class="skill-tag">ARM</span>
+                        <span class="skill-tag">x86</span>
+                        <span class="skill-tag">Cache Coherency</span>
+                        <span class="skill-tag">MMU</span>
+                    </div>
+                </div>
+
+                <div class="skill-group">
+                    <h4>低功耗验证</h4>
+                    <div class="skill-tags">
+                        <span class="skill-tag">UPF 3.0</span>
+                        <span class="skill-tag">CPF</span>
+                        <span class="skill-tag">Power-Aware Sim</span>
+                        <span class="skill-tag">MVRC</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ Contact ═══ -->
+    <section id="contact">
+        <div class="container">
+            <div class="section-label">联系</div>
+            <h2 class="section-title">建立连接</h2>
+            <p class="section-desc">
+                如果您有验证相关的技术探讨、项目合作或职业交流，欢迎随时联系。
+            </p>
+
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="emoji-icon">📧</div>
+                        <div class="info">
+                            <h4>Email</h4>
+                            <a href="mailto:yourname@example.com">yourname@example.com</a>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="emoji-icon">📱</div>
+                        <div class="info">
+                            <h4>Phone</h4>
+                            <p>+86 138-0000-0000</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="emoji-icon">💼</div>
+                        <div class="info">
+                            <h4>LinkedIn</h4>
+                            <a href="#">linkedin.com/in/yourname</a>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="emoji-icon">🐙</div>
+                        <div class="info">
+                            <h4>GitHub</h4>
+                            <a href="#">github.com/yourname</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="qr-section">
+                    <div class="qr-card">
+                        <div class="qr-placeholder">
+                            <span class="qr-icon">▣</span>
+                            <span>替换为你的<br>微信二维码</span>
+                        </div>
+                        <p>📱 扫码添加微信</p>
+                        <p class="hint">（请替换上方占位图为你的二维码图片）</p>
+                        <p style="margin-top: 12px; font-size: 13px; color: var(--text-secondary);">
+                            或搜索微信号：<strong style="color: var(--accent-cyan);">YourWeChatID</strong>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ Footer ═══ -->
+    <footer>
+        <div class="container">
+            <p>
+                &copy; 2026 CPU IP Verification Engineer &nbsp;|&nbsp; Built with
+                <span style="color: var(--accent-cyan);">&lt;/&gt;</span>
+                &nbsp;|&nbsp; 验证 · 精于微
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>
